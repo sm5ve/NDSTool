@@ -105,6 +105,10 @@ public class SMDLTrkChunkFactory implements SMDLChunkFactory {
                 addr += 2;
                 //TODO figure out this command
             }
+            else if(eventID == 0xb2){
+                addr += 2;
+                //TODO figure out this command
+            }
             else if(eventID == 0xdb){
                 addr += 2;
                 //TODO figure out this command
@@ -268,11 +272,11 @@ public class SMDLTrkChunkFactory implements SMDLChunkFactory {
             }
 
             int duration = 0;
-            //for(int i = paramSize; i > 0; i--){
-            for(int i = 0; i < paramSize; i++){
+            for(int i = paramSize; i > 0; i--){
+            //for(int i = 0; i < paramSize; i++){
                 duration <<= 8;
-                duration |= //c.getUnsignedByte(base + i);
-                        c.getUnsignedByte(base + i + 1);
+                duration |= c.getUnsignedByte(base + i);
+                        //c.getUnsignedByte(base + i + 1);
             }
 
             state.lastRest = duration;

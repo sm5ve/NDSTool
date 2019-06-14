@@ -28,7 +28,8 @@ public class FNT {
 
         processSubtable(addr + c.getInt(addr), c.getUnsignedShort(addr + 4), 0xf000);
         for(int i = 0; i < subdirs - 1; i++){
-            processSubtable(addr + c.getInt(addr + (i + 1) * 8), c.getUnsignedShort(addr + (i + 1) * 8 + 4), c.getUnsignedShort(addr + (i + 1) * 8 + 6));
+            int parent = 0xf000 | (i + 1);
+            processSubtable(addr + c.getInt(addr + (i + 1) * 8), c.getUnsignedShort(addr + (i + 1) * 8 + 4), parent);
         }
     }
 
@@ -83,6 +84,9 @@ public class FNT {
 
     protected void addFNTEntry(FNTEntry entry){
         int parent = entry.getParent();
+        if(this.entries[entry.getId()] != null){
+            System.err.println("huh");
+        }
         this.entries[entry.getId()] = entry;
         if(!this.fileTree.containsKey(parent)){
             this.fileTree.put(parent, new ArrayList<Integer>());
@@ -131,6 +135,10 @@ public class FNT {
 
     public boolean isEmpty(){
         return this.fileTree.size() <= 1;
+    }
+
+    public boolean hasEntry(int id){
+        return this.entries[id] != null;
     }
 
 }

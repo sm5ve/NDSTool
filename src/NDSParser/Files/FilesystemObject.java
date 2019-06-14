@@ -28,6 +28,22 @@ public abstract class FilesystemObject {
         return fnt.getFileFromID(this.id).getName();
     }
 
+    public int getId(){
+        return this.id;
+    }
+
+    public int getParentID(){
+        if(!this.fnt.hasEntry(this.id)){
+            return -1;
+        }
+        try {
+            return this.fnt.getFileFromID(this.id).getParent();
+        } catch (BadFileException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
     @Override
     public String toString(){
         try {

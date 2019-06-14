@@ -33,6 +33,11 @@ public class GUIContextForFile extends JPopupMenu {
                 e1.printStackTrace();
             }
         });
+        JMenuItem props = new JMenuItem("Properties");
+        this.add(props);
+        props.addActionListener(e -> {
+            new FileProps(obj);
+        });
         if(obj instanceof AbstractFile){
             try {
                 JMenuItem hex = new JMenuItem("View Hex");
