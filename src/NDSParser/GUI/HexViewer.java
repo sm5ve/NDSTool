@@ -5,6 +5,8 @@ import NDSParser.Files.AbstractFolder;
 import NDSParser.Files.BadFileException;
 
 import javax.swing.*;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.nio.charset.StandardCharsets;
@@ -36,6 +38,16 @@ public class HexViewer extends JFrame {
         }
 
         JTable hex = new JTable(data, labels);
+
+        AbstractTableModel model = new DefaultTableModel(data, labels) {
+
+            @Override
+            public boolean isCellEditable(int i, int i1) {
+                return false; //To change body of generated methods, choose Tools | Templates.
+            }
+        };
+
+        hex.setModel(model);
 
         hex.getColumnModel().getColumn(0).setMinWidth(100);
 
