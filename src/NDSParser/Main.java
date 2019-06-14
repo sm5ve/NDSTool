@@ -12,8 +12,8 @@ import NDSParser.GUI.HexViewer;
 public class Main {
     public static void main(String[] args) throws IOException, BadFileException, BadPathException {
         //File f = new File("./BlueRescueTeam.nds");
-        //File f = new File("./SkyTeam.nds");
-        File f = new File("./diamond.nds");
+        File f = new File("./SkyTeam.nds");
+        //File f = new File("./diamond.nds");
         //File f = new File("./kart.nds");
         Cart c = new Cart(f);
         System.out.println(c);

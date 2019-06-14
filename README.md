@@ -11,13 +11,13 @@ This tool doesn't have a particularly clear direction yet, but some other functi
 * A built in hex viewer
 * A pseudo-command line interface to browse the file system
 * Cartridge icon decoding
+* Allows users to extract files/directories onto their host file system
 
 A current to-do list in rough order of most to least important is
 
 * Comments
 * Fix SMDL timing issues
 * Fix BGP decoding
-* Allow users to extract files/directories onto their host file system
 * Basic file editing
 * More modular structure/plugins
 * Better GUI

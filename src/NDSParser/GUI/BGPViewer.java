@@ -78,14 +78,15 @@ public class BGPViewer extends JFrame {
         for(int i = 0; i < 24; i++){
             for(int j = 0; j < 32; j++){
                 int index = i * 32 + j;
+
                 int addr = 0x420 + index * 2;
 
                 //int entry = ((data[addr] & 0xff) << 8) | (data[addr + 1] & 0xff);
                 int entry = ((data[addr + 1] & 0xff) << 8) | (data[addr] & 0xff);
 
                 int tileIndex = entry & 0x3ff;
-                boolean flipx = (entry & 0x800) != 0;
-                boolean flipy = (entry & 0x400) != 0;
+                boolean flipx = (entry & 0x400) != 0;
+                boolean flipy = (entry & 0x800) != 0;
                 int paletteIndex = (entry >> 12) & 0xf;
 
                 //int tileIndex = (entry >> 10) & 0x3ff;

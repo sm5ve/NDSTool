@@ -11,6 +11,7 @@ import NDSParser.Sounds.SMDL;
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiUnavailableException;
 import javax.swing.*;
+import java.io.*;
 
 /**
  * Created by Spencer on 6/12/19.
@@ -21,6 +22,17 @@ public class GUIContextForFile extends JPopupMenu {
     public GUIContextForFile(FilesystemObject obj, Cart c){
         this.obj = obj;
         this.c = c;
+        JMenuItem save = new JMenuItem("Save");
+        this.add(save);
+        save.addActionListener(e -> {
+            try {
+                FileSaver.save(new File("."), obj, true);
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            } catch (BadFileException e1) {
+                e1.printStackTrace();
+            }
+        });
         if(obj instanceof AbstractFile){
             try {
                 JMenuItem hex = new JMenuItem("View Hex");
