@@ -21,12 +21,7 @@ public class CARC extends FileType {
 
     @Override
     public boolean matches(AbstractFile object) {
-        try {
-            return object.getName().endsWith(".carc");
-        } catch (BadFileException e) {
-            e.printStackTrace();
-        }
-        return false;
+        return object.hasHeader("NARC", 5);
     }
 
     @Override

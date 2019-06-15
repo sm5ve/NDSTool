@@ -10,8 +10,8 @@ public class Main {
         //File f = new File("./BlueRescueTeam.nds");
         //File f = new File("./SkyTeam.nds");
         //File f = new File("./diamond.nds");
-        //File f = new File("./kart.nds");
-        File f = new File("./hg.nds");
+        File f = new File("./kart.nds");
+        //File f = new File("./hg.nds");
         Cart c = new Cart(f);
         System.out.println(c);
 
