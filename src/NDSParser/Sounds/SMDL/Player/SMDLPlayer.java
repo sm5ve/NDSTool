@@ -1,13 +1,12 @@
-package NDSParser.Sounds.Player;
+package NDSParser.Sounds.SMDL.Player;
 import java.io.*;
 /**
  * Created by Spencer on 6/12/19.
  */
 
-import NDSParser.Sounds.SMDLTrkChunkFactory;
+import NDSParser.Sounds.SMDL.SMDLTrkChunkFactory;
 
 import javax.sound.midi.*;
-import javax.sound.sampled.AudioSystem;
 
 
 public class SMDLPlayer {

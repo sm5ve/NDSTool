@@ -3,10 +3,11 @@ package NDSParser.GUI;
 import NDSParser.Files.*;
 import NDSParser.Cart;
 import NDSParser.Files.NARC.BadNARCException;
+import NDSParser.Files.NARC.CARC;
 import NDSParser.Files.NARC.NARC;
-import NDSParser.Sounds.BadSMDLException;
-import NDSParser.Sounds.Player.SMDLPlayer;
-import NDSParser.Sounds.SMDL;
+import NDSParser.Sounds.SMDL.BadSMDLException;
+import NDSParser.Sounds.SMDL.Player.SMDLPlayer;
+import NDSParser.Sounds.SMDL.SMDL;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiUnavailableException;
@@ -85,7 +86,7 @@ public class GUIContextForFile extends JPopupMenu {
                             else{
                                 root = FilesystemObject.getRoot(narc.getBfnt(), narc.getBfat());
                             }
-                            new GUIMain(root, c);
+                            new GUIFileBrowser(root, c);
                         } catch (BadNARCException e1) {
                             e1.printStackTrace();
                         } catch (BadFileException e1) {
@@ -98,7 +99,7 @@ public class GUIContextForFile extends JPopupMenu {
                     this.add(player);
                     player.addActionListener(e -> {
                         try {
-                            NARC narc = new NARC(c, ((AbstractFile) obj).getEntry(), 5);
+                            NARC narc = CARC.decode((FileObject) obj);;
                             AbstractFolder root;
                             if(narc.getBfnt().isEmpty()){
                                 root = new RawFolderObject(narc.getBfat());
@@ -106,12 +107,13 @@ public class GUIContextForFile extends JPopupMenu {
                             else{
                                 root = FilesystemObject.getRoot(narc.getBfnt(), narc.getBfat());
                             }
-                            new GUIMain(root, c);
+                            new GUIFileBrowser(root, c);
                         } catch (BadNARCException e1) {
                             e1.printStackTrace();
                         } catch (BadFileException e1) {
                             e1.printStackTrace();
                         }
+
                     });
                 }
             } catch (BadFileException e) {

@@ -9,9 +9,8 @@ import java.util.ArrayList;
  */
 public class FAT {
     protected FileHandle[] table;
-    protected final Cart c;
+    protected final byte[] memory;
     public FAT(Cart c){
-        this.c = c;
         table = new FileHandle[c.getFATsize() / 8];
         for(int i = 0; i < table.length; i++){
             int addr = c.getFATaddr() + i * 8;
@@ -20,10 +19,11 @@ public class FAT {
             FileHandle e = new FileHandle(start, end);
             table[i] = e;
         }
+        this.memory = c.data;
     }
 
-    protected FAT(Cart c, Object o){
-        this.c = c;
+    protected FAT(byte[] memory){
+        this.memory = memory;
     }
 
     public FileHandle getFileEntry(int id){
@@ -31,7 +31,11 @@ public class FAT {
     }
 
     public byte[] copyFile(int id){
-        return this.c.getBytes(this.getFileEntry(id).start, this.getFileEntry(id).end);
+        byte[] out = new byte[this.getFileEntry(id).end - this.getFileEntry(id).start];
+        for(int i = this.getFileEntry(id).start; i < this.getFileEntry(id).end; i++){
+            out[i - this.getFileEntry(id).start] = this.memory[i];
+        }
+        return out;
     }
 
     public int getNumberIDs(){

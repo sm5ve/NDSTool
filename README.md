@@ -9,7 +9,6 @@ This tool allows one to explore the file structure of a Nintendo DS ROM and view
 This tool doesn't have a particularly clear direction yet, but some other functionality includes
 
 * A built in hex viewer
-* A pseudo-command line interface to browse the file system
 * Cartridge icon decoding
 * Allows users to extract files/directories onto their host file system
 

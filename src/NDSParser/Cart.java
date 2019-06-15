@@ -2,16 +2,15 @@ package NDSParser; /**
  * Created by Spencer on 6/11/19.
  */
 
+import NDSParser.Utils.ByteUtils;
+
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.Arrays;
 
 public class Cart {
     public final byte[] data;
 
-    private static final boolean DEFAULT_ENDIANNESS = true;
     public Cart(File f) throws IOException {
         data = Files.readAllBytes(f.toPath());
     }
@@ -30,11 +29,11 @@ public class Cart {
     }
 
     public byte getByte(int addr){
-        return data[addr];
+        return ByteUtils.getByte(this.data, addr);
     }
 
     public int getUnsignedByte(int addr){
-        return ((int)data[addr]) & 0xff;
+        return ByteUtils.getUnsignedByte(data, addr);
     }
 
     public int getSize(){
@@ -42,65 +41,47 @@ public class Cart {
     }
 
     public byte[] getBytes(int from, int to){
-        return Arrays.copyOfRange(data, from, to);
+        return ByteUtils.getBytes(data, from, to);
     }
 
     public byte[] getNullTerminatedBytes(int start){
-        int end = start;
-        while(getByte(end) != 0){
-            end++;
-        }
-        return getBytes(start, end);
+        return ByteUtils.getNullTerminatedBytes(data, start);
     }
 
     public String getASCII(int from, int to){
-        return new String(getBytes(from, to), StandardCharsets.US_ASCII);
+       return ByteUtils.getASCII(data, from, to);
     }
 
     public String getUTF16(int from, int to){
-        return new String(getBytes(from, to), StandardCharsets.UTF_16LE);
+        return ByteUtils.getUTF16(data, from, to);
     }
 
     public String getNullTerminatedUTF8(int start){
-        return new String(getNullTerminatedBytes(start), StandardCharsets.UTF_16LE);
+        return ByteUtils.getNullTerminatedUTF8(data, start);
     }
 
     public int getInt(int addr, boolean littleEndian){
-        int start = littleEndian ? addr + 3 : addr;
-        int end = littleEndian ? addr: addr + 3;
-        int delta = littleEndian ? -1 : 1;
-        int out = 0;
-        for(int i = start; i != end + delta; i += delta){
-            out = (out << 8) + getUnsignedByte(i);
-        }
-        return out;
+        return ByteUtils.getInt(data, addr, littleEndian);
     }
 
     public int getInt(int addr){
-        return getInt(addr, DEFAULT_ENDIANNESS);
+        return ByteUtils.getInt(data, addr);
     }
 
     public short getShort(int addr, boolean littleEndian){
-        return (short)getUnsignedShort(addr, littleEndian);
+        return ByteUtils.getShort(data, addr, littleEndian);
     }
 
     public short getShort(int addr){
-        return getShort(addr, DEFAULT_ENDIANNESS);
+        return ByteUtils.getShort(data, addr);
     }
 
     public int getUnsignedShort(int addr, boolean littleEndian){
-        int start = littleEndian ? addr + 1 : addr;
-        int end = littleEndian ? addr: addr + 1;
-        int delta = littleEndian ? -1 : 1;
-        int out = 0;
-        for(int i = start; i != end + delta; i += delta){
-            out = (out << 8) + getUnsignedByte(i);
-        }
-        return out;
+        return ByteUtils.getUnsignedShort(data, addr, littleEndian);
     }
 
     public int getUnsignedShort(int addr){
-        return getUnsignedShort(addr, DEFAULT_ENDIANNESS);
+        return ByteUtils.getUnsignedShort(data, addr);
     }
 
 

@@ -10,15 +10,12 @@ import java.util.HashMap;
  * Created by Spencer on 6/11/19.
  */
 public class FNT {
-    protected final Cart c;
-
     protected FNTEntry[] entries = new FNTEntry[0xffff];
 
+    protected int registered = 0;
     protected HashMap<Integer, ArrayList<Integer>> fileTree = new HashMap<>();
 
     public FNT(Cart c){
-        this.c = c;
-
         int addr = c.getFNTaddr();
 
         int subdirs = c.getUnsignedShort(addr + 0x6);
@@ -26,15 +23,15 @@ public class FNT {
         FNTEntry root = new FNTEntry("", 0xf000, FNTEntryType.SUBDIRECTORY, 0xf000);
         this.addFNTEntry(root);
 
-        processSubtable(addr + c.getInt(addr), c.getUnsignedShort(addr + 4), 0xf000);
+        processSubtable(c, addr + c.getInt(addr), c.getUnsignedShort(addr + 4), 0xf000);
         for(int i = 0; i < subdirs - 1; i++){
             int parent = 0xf000 | (i + 1);
-            processSubtable(addr + c.getInt(addr + (i + 1) * 8), c.getUnsignedShort(addr + (i + 1) * 8 + 4), parent);
+            processSubtable(c, addr + c.getInt(addr + (i + 1) * 8), c.getUnsignedShort(addr + (i + 1) * 8 + 4), parent);
         }
     }
 
-    protected FNT(Cart c, Object o){
-        this.c = c;
+    protected FNT(){
+
     }
 
     public ArrayList<Integer> getFileIDsInDirectory(int id) throws BadFileException {
@@ -54,7 +51,7 @@ public class FNT {
         return entries[id];
     }
 
-    protected void processSubtable(int addr, int fileBase, int parent){
+    protected void processSubtable(Cart c, int addr, int fileBase, int parent){
         while(true){
             int type = c.getUnsignedByte(addr);
             if(type == 0){
@@ -92,6 +89,9 @@ public class FNT {
             this.fileTree.put(parent, new ArrayList<Integer>());
         }
         this.fileTree.get(parent).add(entry.getId());
+        if(entry.getId() != 0xf000){
+            registered++;
+        }
     }
 
     public static enum FNTEntryType{
@@ -134,7 +134,7 @@ public class FNT {
     }
 
     public boolean isEmpty(){
-        return this.fileTree.size() <= 1;
+        return registered == 0;
     }
 
     public boolean hasEntry(int id){

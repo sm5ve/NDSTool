@@ -14,10 +14,10 @@ import java.awt.event.MouseListener;
 /**
  * Created by Spencer on 6/12/19.
  */
-public class GUIMain extends JFrame implements MouseListener{
+public class GUIFileBrowser extends JFrame implements MouseListener{
     JTree tree;
     private final Cart c;
-    public GUIMain(AbstractFolder obj, Cart c) throws BadFileException {
+    public GUIFileBrowser(AbstractFolder obj, Cart c) throws BadFileException {
         this.c = c;
         this.setSize(new Dimension(200, 200));
         this.setLocationRelativeTo(null);

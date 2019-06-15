@@ -1,8 +1,8 @@
-package NDSParser.Sounds;
+package NDSParser.Sounds.SMDL;
 
 import NDSParser.Cart;
-import NDSParser.Sounds.Player.SMDLPlayer;
-import NDSParser.Sounds.Player.SMDLPlayerState;
+import NDSParser.Sounds.SMDL.Player.SMDLPlayer;
+import NDSParser.Sounds.SMDL.Player.SMDLPlayerState;
 import NDSParser.Tuple;
 import javax.sound.midi.*;
 

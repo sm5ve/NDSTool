@@ -1,4 +1,4 @@
-package NDSParser.Sounds;
+package NDSParser.Sounds.SMDL;
 
 import NDSParser.Cart;
 import NDSParser.Tuple;

@@ -39,7 +39,7 @@ public class FileProps extends JFrame {
 
             @Override
             public boolean isCellEditable(int i, int i1) {
-                return false; //To change body of generated methods, choose Tools | Templates.
+                return false;
             }
         };
 

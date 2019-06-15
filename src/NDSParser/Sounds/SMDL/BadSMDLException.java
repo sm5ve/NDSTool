@@ -1,4 +1,4 @@
-package NDSParser.Sounds;
+package NDSParser.Sounds.SMDL;
 
 /**
  * Created by Spencer on 6/11/19.
