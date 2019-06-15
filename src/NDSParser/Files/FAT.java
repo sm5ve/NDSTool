@@ -9,7 +9,7 @@ import java.util.ArrayList;
  */
 public class FAT {
     protected FileHandle[] table;
-    protected final byte[] memory;
+    public final byte[] memory; //TODO There really should be a cleaner way to access this quickly
     public FAT(Cart c){
         table = new FileHandle[c.getFATsize() / 8];
         for(int i = 0; i < table.length; i++){

@@ -1,5 +1,7 @@
 package NDSParser.Files;
 
+import NDSParser.Utils.ByteUtils;
+
 /**
  * Created by Spencer on 6/11/19.
  */

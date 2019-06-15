@@ -2,7 +2,8 @@ package NDSParser.Sounds.SMDL;
 
 import NDSParser.Cart;
 import NDSParser.Files.FileHandle;
-import NDSParser.Tuple;
+import NDSParser.Utils.ByteUtils;
+import NDSParser.Utils.Tuple;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,20 +31,20 @@ public class SMDL {
 
     private ArrayList<SMDLChunk> chunks = new ArrayList<>();
 
-    public SMDL(Cart c, FileHandle handle) throws BadSMDLException{
-        int base = handle.start;
-        if(c.getInt(base, false) != 0x736D646C){
+    public SMDL(byte[] data) throws BadSMDLException{
+        int base = 0;
+        if(ByteUtils.getInt(data, base, false) != 0x736D646C){
             throw new BadSMDLException();
         }
-        name = c.getASCII(base + 0x20, base + 0x30);
-        size = c.getInt(base + 0x8);
+        name = ByteUtils.getASCII(data, base + 0x20, base + 0x30);
+        size = ByteUtils.getInt(data, base + 0x8);
 
         base += 64;
 
         System.out.println(this.name);
 
-        while ((base - handle.start) < size){
-            Tuple<SMDLChunk, Integer> out = makeChunk(c, base);
+        while ((base - data.length) < size){
+            Tuple<SMDLChunk, Integer> out = makeChunk(data, base);
             base = out.b;
             chunks.add(out.a);
         }
@@ -64,13 +65,13 @@ public class SMDL {
         return tks;
     }
 
-    private Tuple<SMDLChunk, Integer> makeChunk(Cart c, int base) throws BadSMDLException{
-        int label = c.getInt(base, false);
+    private Tuple<SMDLChunk, Integer> makeChunk(byte[] data, int base) throws BadSMDLException{
+        int label = ByteUtils.getInt(data, base, false);
         if(!factories.containsKey(label)){
             System.err.printf("Unknown label: 0x%x\n",label);
             throw new BadSMDLException();
         }
         System.out.println("Creating chunk with factory " + factories.get(label).getClass().getCanonicalName());
-        return factories.get(label).parseChunk(c, base);
+        return factories.get(label).parseChunk(data, base);
     }
 }

@@ -33,6 +33,9 @@ public abstract class FilesystemObject {
     }
 
     public int getParentID(){
+        if(this.fnt == null){
+            return -1;
+        }
         if(!this.fnt.hasEntry(this.id)){
             return -1;
         }

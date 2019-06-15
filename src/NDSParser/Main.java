@@ -23,7 +23,7 @@ public class Main {
         //new HexViewer(bgp.copyFile());
         //new BGPViewer(bgp);
 
-        new GUIFileBrowser(root, c);
+        new GUIFileBrowser(root);
 
     }
 }

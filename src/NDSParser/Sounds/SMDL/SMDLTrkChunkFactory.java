@@ -3,7 +3,8 @@ package NDSParser.Sounds.SMDL;
 import NDSParser.Cart;
 import NDSParser.Sounds.SMDL.Player.SMDLPlayer;
 import NDSParser.Sounds.SMDL.Player.SMDLPlayerState;
-import NDSParser.Tuple;
+import NDSParser.Utils.ByteUtils;
+import NDSParser.Utils.Tuple;
 import javax.sound.midi.*;
 
 import javax.sound.midi.ShortMessage;
@@ -24,72 +25,72 @@ public class SMDLTrkChunkFactory implements SMDLChunkFactory {
     }
 
     @Override
-    public Tuple<SMDLChunk, Integer> parseChunk(Cart c, int base) throws BadSMDLException {
+    public Tuple<SMDLChunk, Integer> parseChunk(byte[] data, int base) throws BadSMDLException {
 
         ParseState state = new ParseState();
 
-        if(c.getInt(base, false) != 0x74726b20){
+        if(ByteUtils.getInt(data, base, false) != 0x74726b20){
             throw new BadSMDLException();
         }
-        int trkid = c.getUnsignedByte(base + 0x10);
-        int chanid = c.getUnsignedByte(base + 0x11) & 0xf;
+        int trkid = ByteUtils.getUnsignedByte(data, base + 0x10);
+        int chanid = ByteUtils.getUnsignedByte(data, base + 0x11) & 0xf;
 
-        int eventByteLen = c.getInt(base + 0xc);
+        int eventByteLen = ByteUtils.getInt(data, base + 0xc);
 
         ArrayList<Event> events = new ArrayList<>();
         int addr = base + 0x14;
         while(true){
-            int eventID = c.getUnsignedByte(addr);
+            int eventID = ByteUtils.getUnsignedByte(data, addr);
             if(0 <= eventID && eventID < 0x80){
-                Tuple<NoteEvent, Integer> event = NoteEvent.makeEvent(c, addr, chanid, state);
+                Tuple<NoteEvent, Integer> event = NoteEvent.makeEvent(data, addr, chanid, state);
                 events.add(event.a);
                 //System.out.println(event.a.note);
                 //System.out.println(event.a.duration);
                 addr = event.b;
             }
             else if(0x80 <= eventID && eventID < 0x90){
-                Tuple<RestEvent, Integer> event = RestEvent.makeEvent(c, addr, state);
+                Tuple<RestEvent, Integer> event = RestEvent.makeEvent(data, addr, state);
                 events.add(event.a);
                 addr = event.b;
             }
             else if(eventID == 0x90){
-                Tuple<RepeatPauseEvent, Integer> event = RepeatPauseEvent.makeEvent(c, addr, state);
+                Tuple<RepeatPauseEvent, Integer> event = RepeatPauseEvent.makeEvent(data, addr, state);
                 events.add(event.a);
                 addr = event.b;
             }
             else if(eventID == 0x91){
-                Tuple<AddPauseEvent, Integer> event = AddPauseEvent.makeEvent(c, addr, state);
+                Tuple<AddPauseEvent, Integer> event = AddPauseEvent.makeEvent(data, addr, state);
                 events.add(event.a);
                 addr = event.b;
             }
             else if(eventID == 0xe0){
-                Tuple<PrimaryVolumeEvent, Integer> event = PrimaryVolumeEvent.makeEvent(c, addr, chanid);
+                Tuple<PrimaryVolumeEvent, Integer> event = PrimaryVolumeEvent.makeEvent(data, addr, chanid);
                 events.add(event.a);
                 addr = event.b;
             }
             else if(eventID == 0xe3){
-                Tuple<SecondaryVolumeEvent, Integer> event = SecondaryVolumeEvent.makeEvent(c, addr);
+                Tuple<SecondaryVolumeEvent, Integer> event = SecondaryVolumeEvent.makeEvent(data, addr);
                 events.add(event.a);
                 addr = event.b;
             }
             else if(eventID == 0xa4 || eventID == 0xa5){
-                Tuple<TempoEvent, Integer> event = TempoEvent.makeEvent(c, addr);
+                Tuple<TempoEvent, Integer> event = TempoEvent.makeEvent(data, addr);
                 events.add(event.a);
                 addr = event.b;
             }
             else if(eventID == 0x98){
-                Tuple<EndTrackEvent, Integer> event = EndTrackEvent.makeEvent(c, addr);
+                Tuple<EndTrackEvent, Integer> event = EndTrackEvent.makeEvent(data, addr);
                 events.add(event.a);
                 addr = event.b;
                 break;
             }
             else if(eventID == 0x99){
-                Tuple<LoopPointEvent, Integer> event = LoopPointEvent.makeEvent(c, addr);
+                Tuple<LoopPointEvent, Integer> event = LoopPointEvent.makeEvent(data, addr);
                 events.add(event.a);
                 addr = event.b;
             }
             else if(eventID == 0x92 || eventID == 0x93 || eventID == 0x94){
-                Tuple<PauseEvent, Integer> event = PauseEvent.makeEvent(c, addr, state);
+                Tuple<PauseEvent, Integer> event = PauseEvent.makeEvent(data, addr, state);
                 events.add(event.a);
                 addr = event.b;
             }
@@ -134,32 +135,32 @@ public class SMDLTrkChunkFactory implements SMDLChunkFactory {
                 //TODO figure out this command
             }
             else if(eventID == 0xd7){
-                Tuple<PitchBendEvent, Integer> event = PitchBendEvent.makeEvent(c, addr);
+                Tuple<PitchBendEvent, Integer> event = PitchBendEvent.makeEvent(data, addr);
                 events.add(event.a);
                 addr = event.b;
             }
             else if(eventID == 0xbe){
-                Tuple<ModEvent, Integer> event = ModEvent.makeEvent(c, addr);
+                Tuple<ModEvent, Integer> event = ModEvent.makeEvent(data, addr);
                 events.add(event.a);
                 addr = event.b;
             }
             else if(eventID == 0xa0){
-                Tuple<SetOctaveEvent, Integer> event = SetOctaveEvent.makeEvent(c, addr);
+                Tuple<SetOctaveEvent, Integer> event = SetOctaveEvent.makeEvent(data, addr);
                 events.add(event.a);
                 addr = event.b;
             }
             else if(eventID == 0xa1){
-                Tuple<AddOctaveEvent, Integer> event = AddOctaveEvent.makeEvent(c, addr);
+                Tuple<AddOctaveEvent, Integer> event = AddOctaveEvent.makeEvent(data, addr);
                 events.add(event.a);
                 addr = event.b;
             }
             else if(eventID == 0xac){
-                Tuple<SetProgramEvent, Integer> event = SetProgramEvent.makeEvent(c, addr, chanid);
+                Tuple<SetProgramEvent, Integer> event = SetProgramEvent.makeEvent(data, addr, chanid);
                 events.add(event.a);
                 addr = event.b;
             }
             else if(eventID == 0xe8){
-                Tuple<PanEvent, Integer> event = PanEvent.makeEvent(c, addr);
+                Tuple<PanEvent, Integer> event = PanEvent.makeEvent(data, addr);
                 events.add(event.a);
                 addr = event.b;
             }
@@ -205,9 +206,9 @@ public class SMDLTrkChunkFactory implements SMDLChunkFactory {
             this.channel = channel;
         }
 
-        public static Tuple<NoteEvent, Integer> makeEvent(Cart c, int base, int channel, ParseState state) throws BadSMDLException{
-            int velocity = c.getByte(base);
-            int evt = c.getUnsignedByte(base + 1);
+        public static Tuple<NoteEvent, Integer> makeEvent(byte[] data, int base, int channel, ParseState state) throws BadSMDLException{
+            int velocity = ByteUtils.getUnsignedByte(data, base);
+            int evt = ByteUtils.getUnsignedByte(data, base + 1);
             if(!(velocity >= 0 && velocity < 0x80)){
                 throw new BadSMDLException();
             }
@@ -223,7 +224,7 @@ public class SMDLTrkChunkFactory implements SMDLChunkFactory {
             else{
                 for(int i = 0; i < paramBytes; i++){
                     duration <<= 8;
-                    duration += c.getUnsignedByte(base + 2 + i);
+                    duration += ByteUtils.getUnsignedByte(data, base + 2 + i);
                 }
                 state.lastNote = duration;
             }
@@ -255,8 +256,8 @@ public class SMDLTrkChunkFactory implements SMDLChunkFactory {
             this.duration = duration * 2;
         }
 
-        public static Tuple<PauseEvent, Integer> makeEvent(Cart c, int base, ParseState state) throws BadSMDLException {
-            int evt = c.getUnsignedByte(base);
+        public static Tuple<PauseEvent, Integer> makeEvent(byte[] data, int base, ParseState state) throws BadSMDLException {
+            int evt = ByteUtils.getUnsignedByte(data, base);
             int paramSize;
             if(evt == 0x92){
                 paramSize = 1;
@@ -275,7 +276,7 @@ public class SMDLTrkChunkFactory implements SMDLChunkFactory {
             for(int i = paramSize; i > 0; i--){
             //for(int i = 0; i < paramSize; i++){
                 duration <<= 8;
-                duration |= c.getUnsignedByte(base + i);
+                duration |= ByteUtils.getUnsignedByte(data, base + i);
                         //c.getUnsignedByte(base + i + 1);
             }
 
@@ -301,8 +302,8 @@ public class SMDLTrkChunkFactory implements SMDLChunkFactory {
             this.duration = duration * 2;
         }
 
-        public static Tuple<RestEvent, Integer> makeEvent(Cart c, int base, ParseState state) throws BadSMDLException{
-            int evt = c.getUnsignedByte(base);
+        public static Tuple<RestEvent, Integer> makeEvent(byte[] data, int base, ParseState state) throws BadSMDLException{
+            int evt = ByteUtils.getUnsignedByte(data, base);
             if(!(evt >= 0x80 && evt < 0x90)){
                 throw new BadSMDLException();
             }
@@ -328,13 +329,13 @@ public class SMDLTrkChunkFactory implements SMDLChunkFactory {
             this.channel = channel;
         }
 
-        public static Tuple<PrimaryVolumeEvent, Integer> makeEvent(Cart c, int base, int channel) throws BadSMDLException {
-            int evt = c.getUnsignedByte(base);
+        public static Tuple<PrimaryVolumeEvent, Integer> makeEvent(byte[] data, int base, int channel) throws BadSMDLException {
+            int evt = ByteUtils.getUnsignedByte(data, base);
             if(evt != 0xe0){
                 throw new BadSMDLException();
             }
 
-            int volume = c.getUnsignedByte(base + 1) & 0x7f;
+            int volume = ByteUtils.getUnsignedByte(data, base + 1) & 0x7f;
 
             return new Tuple<>(new PrimaryVolumeEvent(volume, channel), base + 2);
         }
@@ -353,13 +354,13 @@ public class SMDLTrkChunkFactory implements SMDLChunkFactory {
             this.volume = volume;
         }
 
-        public static Tuple<SecondaryVolumeEvent, Integer> makeEvent(Cart c, int base) throws BadSMDLException {
-            int evt = c.getUnsignedByte(base);
+        public static Tuple<SecondaryVolumeEvent, Integer> makeEvent(byte[] data, int base) throws BadSMDLException {
+            int evt = ByteUtils.getUnsignedByte(data, base);
             if(evt != 0xe3){
                 throw new BadSMDLException();
             }
 
-            int volume = c.getUnsignedByte(base + 1) * 0x7f;
+            int volume = ByteUtils.getUnsignedByte(data, base + 1) * 0x7f;
 
             return new Tuple<>(new SecondaryVolumeEvent(volume), base + 2);
         }
@@ -377,13 +378,13 @@ public class SMDLTrkChunkFactory implements SMDLChunkFactory {
             this.tempo = tempo;
         }
 
-        public static Tuple<TempoEvent, Integer> makeEvent(Cart c, int base) throws BadSMDLException {
-            int evt = c.getUnsignedByte(base);
+        public static Tuple<TempoEvent, Integer> makeEvent(byte[] data, int base) throws BadSMDLException {
+            int evt = ByteUtils.getUnsignedByte(data, base);
             if(evt != 0xa4 && evt != 0xa5){
                 throw new BadSMDLException();
             }
 
-            int tempo = c.getUnsignedByte(base + 1) * 0x7f;
+            int tempo = ByteUtils.getUnsignedByte(data, base + 1) * 0x7f;
 
             return new Tuple<>(new TempoEvent(tempo), base + 2);
         }
@@ -401,8 +402,8 @@ public class SMDLTrkChunkFactory implements SMDLChunkFactory {
         private LoopPointEvent(){
         }
 
-        public static Tuple<LoopPointEvent, Integer> makeEvent(Cart c, int base) throws BadSMDLException {
-            int evt = c.getUnsignedByte(base);
+        public static Tuple<LoopPointEvent, Integer> makeEvent(byte[] data, int base) throws BadSMDLException {
+            int evt = ByteUtils.getUnsignedByte(data, base);
             if(evt != 0x99){
                 throw new BadSMDLException();
             }
@@ -421,8 +422,8 @@ public class SMDLTrkChunkFactory implements SMDLChunkFactory {
         private EndTrackEvent(){
         }
 
-        public static Tuple<EndTrackEvent, Integer> makeEvent(Cart c, int base) throws BadSMDLException {
-            int evt = c.getUnsignedByte(base);
+        public static Tuple<EndTrackEvent, Integer> makeEvent(byte[] data, int base) throws BadSMDLException {
+            int evt = ByteUtils.getUnsignedByte(data, base);
             if(evt != 0x98){
                 throw new BadSMDLException();
             }
@@ -447,13 +448,13 @@ public class SMDLTrkChunkFactory implements SMDLChunkFactory {
             this.pitchbend = duration;
         }
 
-        public static Tuple<PitchBendEvent, Integer> makeEvent(Cart c, int base) throws BadSMDLException {
-            int evt = c.getUnsignedByte(base);
+        public static Tuple<PitchBendEvent, Integer> makeEvent(byte[] data, int base) throws BadSMDLException {
+            int evt = ByteUtils.getUnsignedByte(data, base);
             if(evt != 0xd7){
                 throw new BadSMDLException();
             }
 
-            int pitchbend = c.getShort(base + 1);
+            int pitchbend = ByteUtils.getShort(data, base + 1);
 
             return new Tuple<>(new PitchBendEvent(pitchbend), base + 3);
         }
@@ -471,13 +472,13 @@ public class SMDLTrkChunkFactory implements SMDLChunkFactory {
             this.octave = octave;
         }
 
-        public static Tuple<SetOctaveEvent, Integer> makeEvent(Cart c, int base) throws BadSMDLException {
-            int evt = c.getUnsignedByte(base);
+        public static Tuple<SetOctaveEvent, Integer> makeEvent(byte[] data, int base) throws BadSMDLException {
+            int evt = ByteUtils.getUnsignedByte(data, base);
             if(evt != 0xa0){
                 throw new BadSMDLException();
             }
 
-            int octave = c.getUnsignedByte(base + 1);
+            int octave = ByteUtils.getUnsignedByte(data, base + 1);
 
             if(!(octave >= 0 && octave < 10)){
                 throw new BadSMDLException();
@@ -499,13 +500,13 @@ public class SMDLTrkChunkFactory implements SMDLChunkFactory {
             this.octave = octave;
         }
 
-        public static Tuple<AddOctaveEvent, Integer> makeEvent(Cart c, int base) throws BadSMDLException {
-            int evt = c.getUnsignedByte(base);
+        public static Tuple<AddOctaveEvent, Integer> makeEvent(byte[] data, int base) throws BadSMDLException {
+            int evt = ByteUtils.getUnsignedByte(data, base);
             if(evt != 0xa1){
                 throw new BadSMDLException();
             }
 
-            int octave = c.getUnsignedByte(base + 1);
+            int octave = ByteUtils.getUnsignedByte(data, base + 1);
 
             return new Tuple<>(new AddOctaveEvent(octave), base + 2);
         }
@@ -523,13 +524,13 @@ public class SMDLTrkChunkFactory implements SMDLChunkFactory {
             this.pan = pan;
         }
 
-        public static Tuple<PanEvent, Integer> makeEvent(Cart c, int base) throws BadSMDLException {
-            int evt = c.getUnsignedByte(base);
+        public static Tuple<PanEvent, Integer> makeEvent(byte[] data, int base) throws BadSMDLException {
+            int evt = ByteUtils.getUnsignedByte(data, base);
             if(evt != 0xe8){
                 throw new BadSMDLException();
             }
 
-            int pan = c.getUnsignedByte(base + 1);
+            int pan = ByteUtils.getUnsignedByte(data, base + 1);
 
             return new Tuple<>(new PanEvent(pan), base + 2);
         }
@@ -547,13 +548,13 @@ public class SMDLTrkChunkFactory implements SMDLChunkFactory {
             this.channel = channel;
         }
 
-        public static Tuple<SetProgramEvent, Integer> makeEvent(Cart c, int base, int channel) throws BadSMDLException {
-            int evt = c.getUnsignedByte(base);
+        public static Tuple<SetProgramEvent, Integer> makeEvent(byte[] data, int base, int channel) throws BadSMDLException {
+            int evt = ByteUtils.getUnsignedByte(data, base);
             if(evt != 0xac){
                 throw new BadSMDLException();
             }
 
-            int prog = c.getUnsignedByte(base + 1);
+            int prog = ByteUtils.getUnsignedByte(data, base + 1);
 
             return new Tuple<>(new SetProgramEvent(prog, channel), base + 2);
         }
@@ -571,13 +572,13 @@ public class SMDLTrkChunkFactory implements SMDLChunkFactory {
             this.mod = mod;
         }
 
-        public static Tuple<ModEvent, Integer> makeEvent(Cart c, int base) throws BadSMDLException {
-            int evt = c.getUnsignedByte(base);
+        public static Tuple<ModEvent, Integer> makeEvent(byte[] data, int base) throws BadSMDLException {
+            int evt = ByteUtils.getUnsignedByte(data, base);
             if(evt != 0xbe){
                 throw new BadSMDLException();
             }
 
-            int mod = c.getUnsignedByte(base + 1);
+            int mod = ByteUtils.getUnsignedByte(data, base + 1);
 
             return new Tuple<>(new ModEvent(mod), base + 2);
         }
@@ -594,8 +595,8 @@ public class SMDLTrkChunkFactory implements SMDLChunkFactory {
             pauseDur = dur;
         }
 
-        public static Tuple<RepeatPauseEvent, Integer> makeEvent(Cart c, int base, ParseState state) throws BadSMDLException {
-            int evt = c.getUnsignedByte(base);
+        public static Tuple<RepeatPauseEvent, Integer> makeEvent(byte[] data, int base, ParseState state) throws BadSMDLException {
+            int evt = ByteUtils.getUnsignedByte(data, base);
             if(evt != 0x90){
                 throw new BadSMDLException();
             }
@@ -624,13 +625,13 @@ public class SMDLTrkChunkFactory implements SMDLChunkFactory {
             }
         }
 
-        public static Tuple<AddPauseEvent, Integer> makeEvent(Cart c, int base, ParseState state) throws BadSMDLException {
-            int evt = c.getUnsignedByte(base);
+        public static Tuple<AddPauseEvent, Integer> makeEvent(byte[] data, int base, ParseState state) throws BadSMDLException {
+            int evt = ByteUtils.getUnsignedByte(data, base);
             if(evt != 0x91){
                 throw new BadSMDLException();
             }
 
-            return new Tuple<>(new AddPauseEvent(c.getByte(base + 1) + state.lastRest), base + 2);
+            return new Tuple<>(new AddPauseEvent(ByteUtils.getByte(data, base + 1) + state.lastRest), base + 2);
         }
 
         @Override

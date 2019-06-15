@@ -1,12 +1,12 @@
 package NDSParser.Sounds.SMDL;
 
 import NDSParser.Cart;
-import NDSParser.Tuple;
+import NDSParser.Utils.Tuple;
 
 /**
  * Created by Spencer on 6/11/19.
  */
 public interface SMDLChunkFactory {
     int getChunkLabel();
-    Tuple<SMDLChunk, Integer> parseChunk(Cart c, int base) throws BadSMDLException;
+    Tuple<SMDLChunk, Integer> parseChunk(byte[] data, int base) throws BadSMDLException;
 }

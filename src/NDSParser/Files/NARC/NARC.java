@@ -24,6 +24,10 @@ public class NARC {
         this(data, h.start, h.end);
     }
 
+    public NARC(byte[] data) throws BadNARCException {
+        this(data, 0, data.length);
+    }
+
     public NARC(byte[] data, int start, int end) throws BadNARCException {
         if(!ByteUtils.getASCII(data, start, start + 4).equals("NARC")){
             throw new BadNARCException();

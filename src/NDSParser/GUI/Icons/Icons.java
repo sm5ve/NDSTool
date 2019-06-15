@@ -10,11 +10,14 @@ import java.io.IOException;
  * Created by Spencer on 6/12/19.
  */
 public class Icons {
-    public static final Icon DOC, FOLDER, MUSIC;
+    public static final Icon DOC, FOLDER, MUSIC, NARC, CARC, BGP;
     static {
         DOC = getIcon("NDSParser/GUI/Icons/doc.png", 16);
         FOLDER = getIcon("NDSParser/GUI/Icons/folder.png", 16);
         MUSIC = getIcon("NDSParser/GUI/Icons/music.png", 16);
+        NARC = getIcon("NDSParser/GUI/Icons/NARC.png", 16);
+        CARC = getIcon("NDSParser/GUI/Icons/CARC.png", 16);
+        BGP = getIcon("NDSParser/GUI/Icons/Picture.png", 16);
     }
 
     private static ImageIcon getIcon(String resource, int height){

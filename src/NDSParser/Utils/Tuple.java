@@ -1,4 +1,4 @@
-package NDSParser;
+package NDSParser.Utils;
 
 /**
  * Created by Spencer on 6/11/19.

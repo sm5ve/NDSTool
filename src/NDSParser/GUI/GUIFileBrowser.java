@@ -2,6 +2,8 @@ package NDSParser.GUI;
 
 import NDSParser.*;
 import NDSParser.Files.*;
+import NDSParser.Files.FileTypeProvider.FileType;
+import NDSParser.Files.FileTypeProvider.Types;
 import NDSParser.GUI.Icons.Icons;
 
 import javax.swing.*;
@@ -16,9 +18,8 @@ import java.awt.event.MouseListener;
  */
 public class GUIFileBrowser extends JFrame implements MouseListener{
     JTree tree;
-    private final Cart c;
-    public GUIFileBrowser(AbstractFolder obj, Cart c) throws BadFileException {
-        this.c = c;
+
+    public GUIFileBrowser(AbstractFolder obj) throws BadFileException {
         this.setSize(new Dimension(200, 200));
         this.setLocationRelativeTo(null);
         this.setTitle("Cart file system browser");
@@ -63,14 +64,8 @@ public class GUIFileBrowser extends JFrame implements MouseListener{
                 if(object instanceof AbstractFolder){
                     setIcon(Icons.FOLDER);
                 }
-                else if(object instanceof FileObject){
-                    FileObject file = (FileObject)object;
-                    if(file.getName().endsWith(".smd")){
-                        setIcon(Icons.MUSIC);
-                    }
-                    else{
-                        setIcon(Icons.DOC);
-                    }
+                else if(object instanceof AbstractFile){
+                    setIcon(Types.getType((AbstractFile) object).getIcon((AbstractFile) object));
                 }
             } catch (BadFileException e) {
                 e.printStackTrace();
@@ -88,7 +83,7 @@ public class GUIFileBrowser extends JFrame implements MouseListener{
             tree.setSelectionRow(row);
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getSelectionPath().getLastPathComponent();
 
-            GUIContextForFile context = new GUIContextForFile((FilesystemObject) node.getUserObject(), c);
+            GUIContextForFile context = new GUIContextForFile((FilesystemObject) node.getUserObject());
             context.show(e.getComponent(), e.getX(), e.getY());
             //popupMenu.show(e.getComponent(), e.getX(), e.getY());
         }

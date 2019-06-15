@@ -20,7 +20,6 @@ A current to-do list in rough order of most to least important is
 * Basic file editing
 * More modular structure/plugins
 * Better GUI
-* File signature-based context menus (as opposed to file extensions)
 * SDAT decoding
 * Search
 * String indexing
