@@ -10,7 +10,7 @@ import javax.sound.midi.*;
 
 
 public class SMDLPlayer {
-    private static Sequencer sequencer;
+    static Sequencer sequencer;
 
     static {
         try {
@@ -20,19 +20,20 @@ public class SMDLPlayer {
         }
     }
 
-    public static void play(SMDLTrkChunkFactory.SMDLTrkChunk[] trks) throws MidiUnavailableException, InvalidMidiDataException {
-
+    static double loadSong(SMDLTrkChunkFactory.SMDLTrkChunk[] trks) throws MidiUnavailableException, InvalidMidiDataException {
         sequencer.open();
 
         Sequence sequence = new Sequence(Sequence.PPQ, 4);
         int tempo = 0;
         int i = 0;
+
         for(SMDLTrkChunkFactory.SMDLTrkChunk trk : trks){
             i++;
             if(i == 8){
                 //break;
             }
             Track track = sequence.createTrack();
+
 
             //track.add(makeEvent(192, channel & 0xf, 0, 0, 1));
 
@@ -53,6 +54,13 @@ public class SMDLPlayer {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        return sequence.getMicrosecondLength() / 1000000f;
+    }
+
+    public static void play(SMDLTrkChunkFactory.SMDLTrkChunk[] trks) throws MidiUnavailableException, InvalidMidiDataException {
+
+        loadSong(trks);
 
         // Sequencer starts to play notes
         sequencer.start();

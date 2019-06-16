@@ -1,6 +1,5 @@
 package NDSParser.Sounds.SMDL;
 
-import NDSParser.Cart;
 import NDSParser.Sounds.SMDL.Player.SMDLPlayer;
 import NDSParser.Sounds.SMDL.Player.SMDLPlayerState;
 import NDSParser.Utils.ByteUtils;
@@ -273,11 +272,11 @@ public class SMDLTrkChunkFactory implements SMDLChunkFactory {
             }
 
             int duration = 0;
-            for(int i = paramSize; i > 0; i--){
-            //for(int i = 0; i < paramSize; i++){
+            //for(int i = paramSize; i > 0; i--){
+            for(int i = 0; i < paramSize; i++){
                 duration <<= 8;
-                duration |= ByteUtils.getUnsignedByte(data, base + i);
-                        //c.getUnsignedByte(base + i + 1);
+                duration |= //ByteUtils.getUnsignedByte(data, base + i);
+                        ByteUtils.getUnsignedByte(data, base + i + 1);
             }
 
             state.lastRest = duration;

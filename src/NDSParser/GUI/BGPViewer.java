@@ -28,9 +28,9 @@ public class BGPViewer extends JFrame {
             e.printStackTrace();
         }
 
-        for(int i = 0; i < 0x20; i++){
+        /*for(int i = 0; i < 0x20; i++){
             System.out.printf("0x%x: 0x%x\n", i, data[i]);
-        }
+        }*/
 
         decodepalette(data);
 

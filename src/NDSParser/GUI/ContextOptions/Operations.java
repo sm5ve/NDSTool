@@ -18,6 +18,7 @@ public class Operations {
         addOperation(new ViewBGP());
         addOperation(new ViewHex());
         addOperation(new ViewProperties());
+        addOperation(new ExportSMDLWav());
     }
 
     public static void addOperation(FileOperation op){

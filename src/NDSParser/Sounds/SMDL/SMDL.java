@@ -13,7 +13,7 @@ import java.util.HashMap;
  */
 public class SMDL {
 
-    private final String name;
+    public final String name;
     private final int size;
 
     private static HashMap<Integer, SMDLChunkFactory> factories = new HashMap<>();
@@ -43,7 +43,7 @@ public class SMDL {
 
         System.out.println(this.name);
 
-        while ((base - data.length) < size){
+        while (base < size){
             Tuple<SMDLChunk, Integer> out = makeChunk(data, base);
             base = out.b;
             chunks.add(out.a);
